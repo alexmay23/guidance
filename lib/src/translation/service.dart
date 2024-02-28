@@ -41,7 +41,8 @@ class TranslationService {
     }
     final result = await _frontend.getList();
     if (result != null) {
-      final bytes = await _executor.execute(EncodeJsonTask(result.map((e) => e.toMap()).toList()));
+      final bytes = await _executor
+          .execute(EncodeJsonTask(result.map((e) => e.toMap()).toList()));
       await _backend.storeBytes(bytes, _listKey);
     }
     return result;
@@ -50,7 +51,9 @@ class TranslationService {
   Future<List<Translation>?> decodeTranslationList(Uint8List bytes) async {
     final decoded = await _executor.execute(DecodeJsonTask(bytes));
     if (decoded is! List) return null;
-    return List.from(decoded).map((e) => Translation.fromMap(Map<String, dynamic>.from(e))).toList();
+    return List.from(decoded)
+        .map((e) => Translation.fromMap(Map<String, dynamic>.from(e)))
+        .toList();
   }
 
   Future<QuranObj?> downloadTranslation(String identifier) async {
@@ -72,7 +75,9 @@ class TranslationService {
   }
 
   Future<List<String>> getCachedIdentifiers() async =>
-      (await _backend.getStoredKeys()).where((element) => element == _listKey).toList();
+      (await _backend.getStoredKeys())
+          .where((element) => element != _listKey)
+          .toList();
 
   Future<void> remove(String id) => _backend.removeBytesForKey(id);
 }
